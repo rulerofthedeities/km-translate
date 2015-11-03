@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="translationDemo">
+<head>
+	<title>Translation Demo</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="translationdemo.css">
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="translate.js"></script>
+    <script src="translationdemo.js"></script>
+</head>
+<body ng-controller="mainCtrl">
+	<flags></flags>
+	<div class="clearfix"></div>
+	<div>Current language: {{data.currentLanguage}}</div>
+	<test1 title="{{data.title | translate}}"></test1>
+	<test2 title="{{data.title}}"></test2>
+</body>
+</html>
+
