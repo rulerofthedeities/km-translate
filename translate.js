@@ -1,57 +1,68 @@
 angular.module('km.translate', [])
 
 .constant('version', '0.0.1')
-.value("translateSettings", {
-	lan: 'en'
-})
 
 .value('translateTable', {
-    'Hello World': {'nl': 'Hallo Wereld'}
+    'Hello World!': {
+    	'cz': 'Ahoj světe!',
+    	'de': 'Hallo Welt!',
+    	'es': '¡Hola, mundo!',
+    	'fr': 'Bonjour le monde!',
+    	'it': 'Ciao, mondo!',
+    	'nl': 'Hallo wereld!',
+    	'ru': 'Привет, мир!'
+    }
 })
 
 /*
-.provider('kmt', function() {
-	this.lan = "";
+.service('kmt', function(){
+	this.lan = "en";
 
-    this.setLanguage = function(newLan) {
-        this.lan = newLan;
-    };
-
-    this.$get = function() {
-        var lan = this.lan;
-        return {
-            getCurrentLanguage: function() {
-                return lan;
-            }
-        };
-    };
-
+	this.getCurrentLanguage = function() {
+		return this.lan;
+	};
+	this.setCurrentLanguage = function(newLan){
+		this.lan = newLan;
+	};
 })
 */
 
-.factory("kmt", function(translateSettings){
+.provider('kmt', function() {
+	var lan = "";
+
 	return {
-		getCurrentLanguage: function(){ 
-			return translateSettings.lan;
-		},
-		setCurrentLanguage: function(newLan){
-			translateSettings.lan = newLan;
-			
+    	configGetCurrentLanguage: function() {
+        	return lan;
+    	},
+    	configSetCurrentLanguage: function(newLan) {
+			lan = newLan;
+    	},
+
+	    $get: function() {
+	        return {
+	            getCurrentLanguage: function() {
+	                return lan;
+	            },
+	            setCurrentLanguage: function(newLan){
+	            	lan = newLan;
+	            }
+	        };
 		}
 	};
+
 })
 
 .factory('doTranslation', function(kmt, translateTable){
 	return {
 		translate: function(strToTranslate){
-			//console.log(translateTable[strToTranslate]);
+			console.log("translating");
 			return translateTable[strToTranslate][kmt.getCurrentLanguage()];
 		}
 	};
 })
 
 .filter('translate', function(doTranslation){
-
+	console.log("translate filter");
 	return function(input){
 		var translation = doTranslation.translate(input);
 		if (translation){
@@ -63,6 +74,7 @@ angular.module('km.translate', [])
 })
 
 .directive('translate', function(){
+	console.log("translate directive");
 	return {
 		link: function(scope, element, attributes, controller){
 			console.log(attributes);
@@ -84,9 +96,10 @@ angular.module('km.translate', [])
 				The fourth parameter is optional.
 					It defines the case if one is required.
 			*/
-			console.log("title" + scope.title);
 			console.log(attributes[params[1]]);
 			attributes[params[1]] = "test";
+			attributes.title = "test2";
+
 		}
 	};
 });

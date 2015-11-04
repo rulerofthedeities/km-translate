@@ -2,6 +2,7 @@
 <html lang="en" ng-app="translationDemo">
 <head>
 	<title>Translation Demo</title>
+	<meta charset="utf-8">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="translationdemo.css">
     <script src="bower_components/angular/angular.js"></script>
@@ -9,11 +10,20 @@
     <script src="translationdemo.js"></script>
 </head>
 <body ng-controller="mainCtrl">
-	<flags></flags>
-	<div class="clearfix"></div>
-	<div>Current language: {{data.currentLanguage}}</div>
-	<test1 title="{{data.title | translate}}"></test1>
-	<test2 title="{{data.title}}"></test2>
+	<div class="panel panel-primary">
+		<div class="panel-heading">Filter</div>
+		<div class="panel-body">
+			<test1 title="{{data.title | translate}}"></test1>
+		</div>
+		<div class="panel-heading">Filter in directive</div>
+		<div class="panel-body">
+			<test2 title="{{data.title}}"></test2>
+		</div>
+		<div class="panel-heading">Attribute</div>
+		<div class="panel-body">
+			<test3 title="{{data.title}}" translate="A|title"></test3>
+		</div>
+	</div>
 </body>
 </html>
 
