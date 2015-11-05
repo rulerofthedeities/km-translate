@@ -1,5 +1,7 @@
 angular.module('km.translate', [])
 
+.constant('DEFAULT_LAN', 'en')
+
 .value('translateTable', {
     'Hello World!': {
     	'cz': 'Ahoj světe!',
@@ -12,7 +14,7 @@ angular.module('km.translate', [])
     }
 })
 
-.provider('kmt', function() {
+.provider('kmt', function(DEFAULT_LAN) {
 	var lan = "";
 
 	return {
@@ -29,7 +31,7 @@ angular.module('km.translate', [])
 	                return lan;
 	            },
 	            setCurrentLanguage: function(newLan){
-	            	lan = newLan;
+	            	lan = newLan || DEFAULT_LAN;
 	            }
 	        };
 		}
