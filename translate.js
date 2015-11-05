@@ -16,14 +16,11 @@ angular.module('km.translate', [])
 
 .provider('kmt', function(DEFAULT_LAN) {
 	var lan = "";
-
+ 
 	return {
-    	configGetCurrentLanguage: function() {
-        	return lan;
-    	},
-    	configSetCurrentLanguage: function(newLan) {
+		configSetCurrentLanguage: function(newLan) {
 			lan = newLan;
-    	},
+		},
 
 	    $get: function() {
 	        return {
@@ -42,7 +39,11 @@ angular.module('km.translate', [])
 .factory('doTranslation', function(kmt, translateTable){
 	return {
 		translate: function(strToTranslate){
-			return translateTable[strToTranslate][kmt.getCurrentLanguage()];
+			//if (translateTable[strToTranslate]){
+				return translateTable[strToTranslate][kmt.getCurrentLanguage()];
+			//} else {
+			//	return strToTranslate;
+			//}
 		}
 	};
 })
@@ -59,18 +60,17 @@ angular.module('km.translate', [])
 	};
 })
 
-.directive('translate', function(){
+.directive('translate', function(doTranslation, $compile){
 	console.log("translate directive");
 	return {
-		compile: function(element, attributes, transclude){
+		compile: function(scope, element, attributes){
 			return {
-				pre: function preLink(scope, iElement, iAttrs, controller) { 
-
+				pre: function preLink(scope, iElement, iAttrs, controller) {
 				},
-        		post: function postLink(scope, iElement, iAttrs, controller) { 
+				post: function postLink(scope, iElement, iAttrs, controller) {
 
-					var params = iAttrs.translate.split("|"); 
-					//console.log(params);
+					var params = iAttrs.translate.split("|"),
+						input = iAttrs[params[1]];
 					/*
 						The first parameter is type of data to translate: 
 							A : attribute
@@ -86,9 +86,12 @@ angular.module('km.translate', [])
 						The fourth parameter is optional.
 							It defines the case if one is required.
 					*/
-					//console.log(iAttrs[params[1]]);
-					iAttrs[params[1]] = "test";
-					//console.log(iAttrs);
+					if (input){
+						iAttrs.$set(params[1], doTranslation.translate(input));
+						iAttrs.$set("translate", ""); //To prevent looping
+
+						$compile(iElement)(scope);
+					}
 				}
 			};
 		}
