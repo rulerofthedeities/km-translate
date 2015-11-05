@@ -39,11 +39,12 @@ angular.module('km.translate', [])
 .factory('doTranslation', function(kmt, translateTable){
 	return {
 		translate: function(strToTranslate){
-			//if (translateTable[strToTranslate]){
-				return translateTable[strToTranslate][kmt.getCurrentLanguage()];
-			//} else {
-			//	return strToTranslate;
-			//}
+			var lan = kmt.getCurrentLanguage();
+			if (translateTable[strToTranslate] && translateTable[strToTranslate][lan]){
+				return translateTable[strToTranslate][lan];
+			} else {
+				return strToTranslate;
+			}
 		}
 	};
 })
@@ -69,8 +70,6 @@ angular.module('km.translate', [])
 				},
 				post: function postLink(scope, iElement, iAttrs, controller) {
 
-					var params = iAttrs.translate.split("|"),
-						input = iAttrs[params[1]];
 					/*
 						The first parameter is type of data to translate: 
 							A : attribute
@@ -86,6 +85,10 @@ angular.module('km.translate', [])
 						The fourth parameter is optional.
 							It defines the case if one is required.
 					*/
+
+					var params = iAttrs.translate.split("|"),
+						input = iAttrs[params[1]];
+
 					if (input){
 						iAttrs.$set(params[1], doTranslation.translate(input));
 						iAttrs.$set("translate", ""); //To prevent looping

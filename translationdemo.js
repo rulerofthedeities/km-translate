@@ -1,9 +1,9 @@
 angular.module("translationDemo", ['ngRoute', 'km.translate'])
 
 .config(function($routeProvider, $provide){
-	console.log("config route");
 	$routeProvider.when('/', {
-		templateUrl:'partials/totranslate.htm'
+		templateUrl:'partials/totranslate.htm',
+		controller:'translateCtrl'
 	}).when('/:lan', {
 		templateUrl:'partials/totranslate.htm',
 		controller:'translateCtrl'
@@ -61,7 +61,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 		template: '<h1>{{header | translate}}</h1>'
 	};
 })
-
+ 
 .directive("test3", function(){
 	return{
 		require: 'E',
