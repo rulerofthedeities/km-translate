@@ -1,7 +1,5 @@
 angular.module('km.translate', [])
 
-.constant('version', '0.0.1')
-
 .value('translateTable', {
     'Hello World!': {
     	'cz': 'Ahoj světe!',
@@ -13,19 +11,6 @@ angular.module('km.translate', [])
     	'ru': 'Привет, мир!'
     }
 })
-
-/*
-.service('kmt', function(){
-	this.lan = "en";
-
-	this.getCurrentLanguage = function() {
-		return this.lan;
-	};
-	this.setCurrentLanguage = function(newLan){
-		this.lan = newLan;
-	};
-})
-*/
 
 .provider('kmt', function() {
 	var lan = "";
@@ -55,7 +40,6 @@ angular.module('km.translate', [])
 .factory('doTranslation', function(kmt, translateTable){
 	return {
 		translate: function(strToTranslate){
-			console.log("translating");
 			return translateTable[strToTranslate][kmt.getCurrentLanguage()];
 		}
 	};
@@ -76,30 +60,36 @@ angular.module('km.translate', [])
 .directive('translate', function(){
 	console.log("translate directive");
 	return {
-		link: function(scope, element, attributes, controller){
-			console.log(attributes);
-			console.log(attributes.translate);
-			var params = attributes.translate.split("|"); 
-			console.log(params);
-			/*
-				The first parameter is type of data to translate: 
-					A : attribute
-					C : content
-					S : scope value
-				The second parameter defines which value to translate:
-					if fist parameter is 
-					A : second parameter is the attribute name
-					C : second parameter is the translation variable used to find the translation (in A & S this is the value)
-					S : second parameter is the scope variable name
-				The third parameter is optional. 
-					It specifies a replacement value, to replace any %s in the text to translate, if available
-				The fourth parameter is optional.
-					It defines the case if one is required.
-			*/
-			console.log(attributes[params[1]]);
-			attributes[params[1]] = "test";
-			attributes.title = "test2";
+		compile: function(element, attributes, transclude){
+			return {
+				pre: function preLink(scope, iElement, iAttrs, controller) { 
 
+				},
+        		post: function postLink(scope, iElement, iAttrs, controller) { 
+
+					var params = iAttrs.translate.split("|"); 
+					//console.log(params);
+					/*
+						The first parameter is type of data to translate: 
+							A : attribute
+							C : content
+							S : scope value
+						The second parameter defines which value to translate:
+							if fist parameter is 
+							A : second parameter is the attribute name
+							C : second parameter is the translation variable used to find the translation (in A & S this is the value)
+							S : second parameter is the scope variable name
+						The third parameter is optional. 
+							It specifies a replacement value, to replace any %s in the text to translate, if available
+						The fourth parameter is optional.
+							It defines the case if one is required.
+					*/
+					//console.log(iAttrs[params[1]]);
+					iAttrs[params[1]] = "test";
+					//console.log(iAttrs);
+				}
+			};
 		}
+
 	};
 });

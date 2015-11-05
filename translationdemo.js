@@ -1,13 +1,48 @@
-angular.module("translationDemo", ['km.translate'])
+angular.module("translationDemo", ['ngRoute', 'km.translate'])
 
-.config(function(kmtProvider){
-	kmtProvider.configSetCurrentLanguage("ru");
+.config(function($routeProvider, $provide){
+	console.log("config route");
+	$routeProvider.when('/', {
+		templateUrl:'partials/totranslate.htm'
+	}).when('/:lan', {
+		templateUrl:'partials/totranslate.htm',
+		controller:'translateCtrl'
+	}).otherwise({redirectTo: '/'});
 })
 
-.controller("mainCtrl", function($scope, kmt){
+.config(function(kmtProvider){
+	kmtProvider.configSetCurrentLanguage("en");
+})
+
+.controller("translateCtrl", function($scope, kmt, $routeParams){
+	kmt.setCurrentLanguage($routeParams.lan);
 	$scope.data = {
-		title:'Hello World!', 
+		title:'Hello World!',
 		currentLanguage: kmt.getCurrentLanguage()
+	};
+})
+
+.directive("flags", function(){
+	return {
+		require: 'E',
+		templateUrl: 'partials/flags.htm',
+		scope: {},
+		controller: function($scope, $location, kmt){
+			//ISO 3166-1-alpha-2 code
+			$scope.languages = [
+				{code: 'en', name:'English'},
+				{code: 'de', name:'Deutsch'}, 
+				{code: 'fr', name:'Français'}, 
+				{code: 'es', name:'Español'}, 
+				{code: 'ru', name:'Ру́сский язы́к'}, 
+				{code: 'nl', name:'Nederlands'},  
+				{code: 'cz', name:'Čeština'}
+				];
+			$scope.setLanguage = function(newLan){
+				var url = '/' + newLan;
+				$location.url(url);
+			};
+		}
 	};
 })
 
@@ -15,7 +50,7 @@ angular.module("translationDemo", ['km.translate'])
 	return{
 		require: 'E',
 		scope : {header:"@title"},
-		template: '<h1>{{header}}</h1>'
+		template: '<h1>{{header}}</h1>' 
 	};
 })
 

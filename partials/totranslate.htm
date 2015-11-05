@@ -1,0 +1,17 @@
+<flags></flags>
+<div class="clearfix"></div>
+<div>Current language: {{data.currentLanguage}}</div>
+<div class="panel panel-primary">
+	<div class="panel-heading">Filter</div>
+	<div class="panel-body">
+		<test1 title="{{data.title | translate}}"></test1>
+	</div>
+	<div class="panel-heading">Filter in directive</div>
+	<div class="panel-body">
+		<test2 title="{{data.title}}"></test2>
+	</div>
+	<div class="panel-heading">Attribute</div>
+	<div class="panel-body">
+		<test3 title="{{data.title}}" translate="A|title"></test3>
+	</div>
+</div>
