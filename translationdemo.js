@@ -37,7 +37,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 				{code: 'ru', name:'Ру́сский язы́к'}, 
 				{code: 'nl', name:'Nederlands'},  
 				{code: 'cz', name:'Čeština'}
-				];
+			];
 			$scope.setLanguage = function(newLan){
 				var url = '/' + newLan;
 				$location.url(url);
@@ -61,11 +61,22 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 		template: '<h1>{{header | translate}}</h1>'
 	};
 })
- 
+
 .directive("test3", function(){
 	return{
 		require: 'E',
 		scope : {header:"@title"},
 		template: '<h1>{{header}}</h1>'
+	};
+})
+
+.directive("test4", function(translate){
+	return{
+		require: 'E',
+		scope : {},
+		template: '<h1>{{title}}</h1>',
+		controller: function($scope){
+			$scope.title = translate.translate("Hello World!");
+		}
 	};
 });

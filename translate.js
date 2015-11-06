@@ -36,11 +36,11 @@ angular.module('km.translate', [])
 
 })
 
-.factory('doTranslation', function(kmt, translateTable){
+.factory('translate', function(kmt, translateTable){
 	return {
 		translate: function(strToTranslate){
 			var lan = kmt.getCurrentLanguage();
-			if (translateTable[strToTranslate] && translateTable[strToTranslate][lan]){
+			if (translateTable && translateTable[strToTranslate] && translateTable[strToTranslate][lan]){
 				return translateTable[strToTranslate][lan];
 			} else {
 				return strToTranslate;
@@ -49,10 +49,10 @@ angular.module('km.translate', [])
 	};
 })
 
-.filter('translate', function(doTranslation){
+.filter('translate', function(translate){
 	console.log("translate filter");
 	return function(input){
-		var translation = doTranslation.translate(input);
+		var translation = translate.translate(input);
 		if (translation){
 			return translation;
 		} else {
@@ -61,7 +61,7 @@ angular.module('km.translate', [])
 	};
 })
 
-.directive('translate', function(doTranslation, $compile){
+.directive('translate', function(translate, $compile){
 	console.log("translate directive");
 	return {
 		compile: function(scope, element, attributes){
@@ -90,7 +90,7 @@ angular.module('km.translate', [])
 						input = iAttrs[params[1]];
 
 					if (input){
-						iAttrs.$set(params[1], doTranslation.translate(input));
+						iAttrs.$set(params[1], translate.translate(input));
 						iAttrs.$set("translate", ""); //To prevent looping
 
 						$compile(iElement)(scope);
