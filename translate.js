@@ -3,15 +3,20 @@ angular.module('km.translate', [])
 .constant('DEFAULT_LAN', 'en')
 
 .value('translateTable', {
-    'Hello World!': {
-    	'cz': 'Ahoj světe!',
-    	'de': 'Hallo Welt!',
-    	'es': '¡Hola, mundo!',
-    	'fr': 'Bonjour le monde!',
-    	'it': 'Ciao, mondo!',
-    	'nl': 'Hallo wereld!',
-    	'ru': 'Привет, мир!'
-    }
+	'Hello World!': {
+		'cz': 'Ahoj světe!',
+		'de': 'Hallo Welt!',
+		'es': '¡Hola, mundo!',
+		'fr': 'Bonjour le monde!',
+		//'it': 'Ciao, mondo!',
+		'nl': 'Hallo wereld!',
+		'ru': 'Привет, мир!'
+	},
+	'daysinweek': {
+		'cz': ["pondělí", "útery", "středa", "čtvrtek", "pátek", "sobota", "neděle"],
+		'en': ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+		'nl': ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"]
+	}
 })
 
 .provider('kmt', function(DEFAULT_LAN) {
@@ -38,12 +43,19 @@ angular.module('km.translate', [])
 
 .factory('translate', function(kmt, translateTable){
 	return {
-		translate: function(strToTranslate){
+		translate: function(strToTranslate, options){
 			var lan = kmt.getCurrentLanguage();
+			options = options || {};
+			strToTranslate = options.alias || strToTranslate;
+			
 			if (translateTable && translateTable[strToTranslate] && translateTable[strToTranslate][lan]){
 				return translateTable[strToTranslate][lan];
 			} else {
-				return strToTranslate;
+				if (options.alias){
+					return null;
+				} else {
+					return strToTranslate;
+				}
 			}
 		}
 	};

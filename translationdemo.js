@@ -31,12 +31,13 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 			//ISO 3166-1-alpha-2 code
 			$scope.languages = [
 				{code: 'en', name:'English'},
-				{code: 'de', name:'Deutsch'}, 
-				{code: 'fr', name:'Français'}, 
-				{code: 'es', name:'Español'}, 
-				{code: 'ru', name:'Ру́сский язы́к'}, 
-				{code: 'nl', name:'Nederlands'},  
-				{code: 'cz', name:'Čeština'}
+				{code: 'de', name:'Deutsch'},
+				{code: 'fr', name:'Français'},
+				{code: 'es', name:'Español'},
+				{code: 'ru', name:'Ру́сский язы́к'},
+				{code: 'nl', name:'Nederlands'},
+				{code: 'cz', name:'Čeština'},
+				{code: 'it', name:'Italiano'}
 			];
 			$scope.setLanguage = function(newLan){
 				var url = '/' + newLan;
@@ -77,6 +78,17 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 		template: '<h1>{{title}}</h1>',
 		controller: function($scope){
 			$scope.title = translate.translate("Hello World!");
+		}
+	};
+})
+
+.directive("test5", function(translate){
+	return{
+		require: 'E',
+		scope : {},
+		template: '<ul class="list-inline"><li ng-repeat="day in days">{{day}}</li></ul>',
+		controller: function($scope){
+			$scope.days = translate.translate(null, {alias:'daysinweek'});
 		}
 	};
 });
