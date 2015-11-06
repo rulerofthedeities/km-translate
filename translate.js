@@ -1,6 +1,6 @@
 angular.module('km.translate', [])
 
-.constant('DEFAULT_LAN', 'en')
+.constant('DEFAULTS', {'LAN': 'en', 'CASE': 'nom'})
 
 .value('translateTable', {
 	'Hello World!': {
@@ -14,12 +14,30 @@ angular.module('km.translate', [])
 	},
 	'daysinweek': {
 		'cz': ["pondělí", "útery", "středa", "čtvrtek", "pátek", "sobota", "neděle"],
+		'de': ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"],
 		'en': ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-		'nl': ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"]
+		'es': ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"],
+		'fr': ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"],
+		//'it': ["lunedì", "martedi", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"],
+		'nl': ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"],
+		'ru': ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"]
+	},
+	'London':{
+		'fr': 'Londres',
+		'nl': 'Londen',
+		'ru' : {
+			'nom' : "Лондон",
+			'acc' : "Лондона",
+			'loc' : "Лондоне"
+		}
+	},
+	'I live in %s':{
+		'fr': 'J\'habite à %s',
+		'nl': 'Ik woon in %s'
 	}
 })
 
-.provider('kmt', function(DEFAULT_LAN) {
+.provider('kmt', function(DEFAULTS) {
 	var lan = "";
  
 	return {
@@ -33,29 +51,53 @@ angular.module('km.translate', [])
 	                return lan;
 	            },
 	            setCurrentLanguage: function(newLan){
-	            	lan = newLan || DEFAULT_LAN;
-	            }
+	            	lan = newLan || DEFAULTS.LAN;
+	            },
+				printf: function(srcStr){
+					if (srcStr.s){
+						console.log(srcStr);
+					}
+				}
 	        };
 		}
 	};
 
 })
 
-.factory('translate', function(kmt, translateTable){
+.factory('translate', function(DEFAULTS, kmt, translateTable){
 	return {
 		translate: function(strToTranslate, options){
-			var lan = kmt.getCurrentLanguage();
+			var lan = kmt.getCurrentLanguage(),
+				translation = strToTranslate,
+				cas;
 			options = options || {};
 			strToTranslate = options.alias || strToTranslate;
-			
+			cas = options['case'];
+			kmt.printf(strToTranslate);
 			if (translateTable && translateTable[strToTranslate] && translateTable[strToTranslate][lan]){
-				return translateTable[strToTranslate][lan];
-			} else {
-				if (options.alias){
-					return null;
+				if (cas && translateTable[strToTranslate][lan][cas]){
+					//Case is requested and found
+					translation = translateTable[strToTranslate][lan][cas];
 				} else {
-					return strToTranslate;
+					//Case is not requested but found, so fetch default case (nominative)
+					if (translateTable[strToTranslate][lan][DEFAULTS.CASE]){
+						translation = translateTable[strToTranslate][lan][DEFAULTS.CASE];
+					} else {
+						translation = translateTable[strToTranslate][lan];
+					}
 				}
+			} else {
+				// No translation found, return null if an alias was given
+				if (options.alias){
+					translation = null;
+				}
+			}
+			//Check if there are strings to be inserted
+			if (/\%s/.test(translation) && options.insert){
+				console.log("string to be inserted");
+				return translation;
+			} else {
+				return translation;
 			}
 		}
 	};

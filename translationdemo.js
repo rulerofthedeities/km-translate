@@ -88,7 +88,40 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 		scope : {},
 		template: '<ul class="list-inline"><li ng-repeat="day in days">{{day}}</li></ul>',
 		controller: function($scope){
-			$scope.days = translate.translate(null, {alias:'daysinweek'});
+			$scope.days = translate.translate(null, {'alias':'daysinweek'});
+		}
+	};
+})
+
+.directive("test6", function(translate){
+	return{
+		require: 'E',
+		scope : {},
+		template: '<div>Source (en):{{city}}<br>Nominative: {{cityNom}}<br>Accusative: {{cityAcc}}<br>Locative: {{cityLoc}}</div>',
+		controller: function($scope){
+			var city = "London",
+				cityNom = translate.translate(city),
+				cityAcc = translate.translate(city, {'case': 'acc'}),
+				cityLoc = translate.translate(city, {'case': 'loc'});
+			$scope.city = city;
+			$scope.cityNom = cityNom;
+			$scope.cityAcc = cityAcc;
+			$scope.cityLoc = cityLoc;
+		}
+	};
+})
+
+.directive("test7", function(translate){
+	return{
+		require: 'E',
+		scope : {},
+		template: '<div>{{whereilive}}<br>{{whereimgoingto}}<br>{{whereiliveandgo}}</div>',
+		controller: function($scope){
+			var city = "London";
+			city = translate.translate("London", {'case':"loc"});
+			$scope.whereilive = translate.translate("I live in %s", {'insert':city});
+			$scope.whereimgoingto = "I'm going to %s";
+			$scope.whereiliveandgo = "I live in %s and I'm going to %s";
 		}
 	};
 });
