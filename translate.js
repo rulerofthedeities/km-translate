@@ -31,9 +31,22 @@ angular.module('km.translate', [])
 			'loc' : "Лондоне"
 		}
 	},
+	'Paris':{
+		'fr': 'Paris',
+		'nl': 'Parijs'
+	},
 	'I live in %s':{
 		'fr': 'J\'habite à %s',
 		'nl': 'Ik woon in %s'
+	},
+	'I\'m going to %s':{
+		'nl': 'Ik ga naar %s'
+	},
+	'I live in %s and I\'m going to %s':{
+		'nl': 'Ik woon in %s en ga naar %s'
+	},
+	'I live in %i1 and I\'m going to %i2':{
+		'nl': 'Ik ga naar %i2 en woon in %i1'
 	}
 })
 
@@ -53,10 +66,21 @@ angular.module('km.translate', [])
 	            setCurrentLanguage: function(newLan){
 	            	lan = newLan || DEFAULTS.LAN;
 	            },
-				printf: function(srcStr){
-					if (srcStr.s){
-						console.log(srcStr);
+				insert: function(srcStr, toInsert){
+					var resultStr = srcStr,
+						find;
+					if (toInsert.constructor === Array){
+						for (var i = 0; i < toInsert.length; i++){
+							find = new RegExp('\%i' + (i + 1));
+							resultStr = resultStr.replace(find, toInsert[i]);
+						}
+						for (var i = 0; i < toInsert.length; i++){
+							resultStr = resultStr.replace(/\%s/, toInsert[i]);
+						}
+					} else {
+						resultStr = srcStr.replace(/\%s/g, toInsert);
 					}
+					return resultStr;
 				}
 	        };
 		}
@@ -73,7 +97,6 @@ angular.module('km.translate', [])
 			options = options || {};
 			strToTranslate = options.alias || strToTranslate;
 			cas = options['case'];
-			kmt.printf(strToTranslate);
 			if (translateTable && translateTable[strToTranslate] && translateTable[strToTranslate][lan]){
 				if (cas && translateTable[strToTranslate][lan][cas]){
 					//Case is requested and found
@@ -93,8 +116,8 @@ angular.module('km.translate', [])
 				}
 			}
 			//Check if there are strings to be inserted
-			if (/\%s/.test(translation) && options.insert){
-				console.log("string to be inserted");
+			if ((/\%s/.test(translation) ||  (/\%i\d/.test(translation))) && options.insert){
+				translation = kmt.insert(translation, options.insert);
 				return translation;
 			} else {
 				return translation;

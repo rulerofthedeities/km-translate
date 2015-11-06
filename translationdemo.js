@@ -115,13 +115,16 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 	return{
 		require: 'E',
 		scope : {},
-		template: '<div>{{whereilive}}<br>{{whereimgoingto}}<br>{{whereiliveandgo}}</div>',
+		template: '<div>{{whereilive}}<br>{{whereimgoingto}}<br>{{whereiliveandgo}}<br>{{whereiliveandgo2}}</div>',
 		controller: function($scope){
-			var city = "London";
-			city = translate.translate("London", {'case':"loc"});
-			$scope.whereilive = translate.translate("I live in %s", {'insert':city});
-			$scope.whereimgoingto = "I'm going to %s";
-			$scope.whereiliveandgo = "I live in %s and I'm going to %s";
+			var cityLoc = translate.translate("London", {'case':"loc"}),
+				cityAcc = translate.translate("Paris", {'case':"acc"});
+			$scope.whereilive = translate.translate("I live in %s", {'insert':cityLoc});
+			$scope.whereimgoingto = translate.translate("I'm going to %s", {'insert':cityAcc});
+			$scope.whereiliveandgo = translate.translate("I live in %s and I'm going to %s",
+				{'insert':["A", "B"]});
+			$scope.whereiliveandgo2 = translate.translate("I live in %i1 and I'm going to %i2",
+				{'insert':["A", "B"]});
 		}
 	};
 });
