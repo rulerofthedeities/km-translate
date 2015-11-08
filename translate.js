@@ -4,13 +4,17 @@ angular.module('km.translate', [])
 	'DEFAULTS', {
 		'LAN': 'en', 
 		'CASE': 'nom', 
-		'FILE' : 'json/translations.json'}
+		'FILE': 'json/translations.json',
+		'FORMATS': ['lan', "term"],
+		'FORMAT': 'lan'
+	}
 )
 
 .service('kmts', function ($http, $log, kmtp){
 	var translationTable,
 		promise,
 		fileName;
+
 	console.log("lan in http service: " + kmtp.getCurrentLanguage());
 	fileName = kmtp.getTranslationFile();
 	promise = $http.get(fileName);
@@ -33,14 +37,19 @@ angular.module('km.translate', [])
 
 .provider('kmtp', function(DEFAULTS) {
 	var lan = DEFAULTS.LAN,
-		translationFile = DEFAULTS.FILE;
+		translationFile = DEFAULTS.FILE,
+		formatType = DEFAULTS.FORMAT;
 
 	return {
 		configSetCurrentLanguage: function(newLan) {
 			lan = newLan;
 		},
-		configSetTranslationFile: function(newFileName){
+		configSetTranslationFile: function(newFileName, format){
 			translationFile = newFileName;
+			if(!~DEFAULTS.FORMATS.indexOf(format)){
+				format = DEFAULTS.FORMAT;
+			}
+			formatType = format;
 		},
 
 	    $get: function() {
@@ -66,32 +75,12 @@ angular.module('km.translate', [])
 					}
 					return resultStr;
 				},
-				getTranslationFile: function(fileName){
-					return fileName || translationFile || DEFAULTS.FILE;
+				getTranslationFile: function(){
+					return translationFile || DEFAULTS.FILE;
 				},
-				loadTranslationFile: function($http, fileName){
-					var dataFile = fileName || translationFile || DEFAULTS.FILE,
-						promise = $http.get(dataFile);
-
-					//test delay
-					console.log("start delay");
-					//setTimeout(function(){ 
-						console.log("end delay");
-						promise.then(
-						function(response) {
-							console.log("Fetched translation data from '" + dataFile + "'");
-							translateTable = response.data;
-						},
-						function(response) {
-							console.log("File '" + dataFile + "' not found.");
-						}
-					);
-					//}, 10);
-					
+				getFileFormat: function(){
+					return formatType;
 				},
-				getTranslationTable: function(){
-					return translationTable;
-				}
 	        };
 		}
 	};
@@ -105,20 +94,23 @@ angular.module('km.translate', [])
 			var lan = kmtp.getCurrentLanguage(),
 				translation = strToTranslate,
 				cas,
-				translateTable = kmts.getTranslationTable();
+				translateTable = kmts.getTranslationTable(),
+				format;//array indices depend on the format of the JSON source 
 			options = options || {};
 			strToTranslate = options.alias || strToTranslate;
+			format = kmtp.getFileFormat() === "term" ? [strToTranslate, lan] : [lan, strToTranslate];
 			cas = options['case'];
-			if (translateTable && translateTable[strToTranslate] && translateTable[strToTranslate][lan]){
-				if (cas && translateTable[strToTranslate][lan][cas]){
+
+			if (translateTable && translateTable[format[0]] && translateTable[format[0]][format[1]]){
+				if (cas && translateTable[format[0]][format[1]][cas]){
 					//Case is requested and found
-					translation = translateTable[strToTranslate][lan][cas];
+					translation = translateTable[format[0]][format[1]][cas];
 				} else {
 					//Case is not requested but found, so fetch default case (nominative)
-					if (translateTable[strToTranslate][lan][DEFAULTS.CASE]){
-						translation = translateTable[strToTranslate][lan][DEFAULTS.CASE];
+					if (translateTable[format[0]][format[1]][DEFAULTS.CASE]){
+						translation = translateTable[format[0]][format[1]][DEFAULTS.CASE];
 					} else {
-						translation = translateTable[strToTranslate][lan];
+						translation = translateTable[format[0]][format[1]];
 					}
 				}
 			} else {

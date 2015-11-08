@@ -6,7 +6,6 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 		controller:'translateCtrl',
 		resolve:{
 			'translationData':function(kmts){
-				console.log("Loading file...");
 				return kmts.promise;
 			}
 		}
@@ -15,7 +14,6 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 		controller:'translateCtrl',
 		resolve:{
 			'translationData':function(kmts){
-				console.log("Loading file...");
 				return kmts.promise;
 			}
 		}
@@ -24,7 +22,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 
 .config(function(kmtpProvider){
 	kmtpProvider.configSetCurrentLanguage("en");
-	//kmtpProvider.configSetTranslationFile("json/translations.json");
+	kmtpProvider.configSetTranslationFile("json/translations.json", "lan");
 })
 
 .controller("translateCtrl", function($scope, kmtp, $routeParams){
