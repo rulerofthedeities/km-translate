@@ -1,0 +1,46 @@
+{
+"cz": {
+	"Hello World!": "Ahoj světe!",
+	"daysinweek": ["pondělí", "útery", "středa", "čtvrtek", "pátek", "sobota", "neděle"]
+	},
+"de": {
+	"Hello World!": "Hallo Welt!",
+	"daysinweek": ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
+	},
+"en": {
+	"daysinweek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+	},
+"es": {
+	"Hello World!": "¡Hola, mundo!",
+	"daysinweek": ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
+	},
+"fr": {
+	"Hello World!": "Bonjour le monde!",
+	"daysinweek": ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"],
+	"London": "Londres",
+	"Paris": "Paris",
+	"I live in %s": "J'habite à %s"
+	},
+"it": {
+	"Hello World!": "Ciao, mondo!",
+	"daysinweek": ["lunedì", "martedi", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"]
+	},
+"nl": {
+	"Hello World!": "Hallo wereld!",
+	"daysinweek": ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"],
+	"London": "Londen",
+	"Paris": "Parijs",
+	"I live in %s": "Ik woon in %s",
+	"I'm going to %s": "Ik ga naar %s",
+	"I live in %s and I'm going to %s": "Ik woon in %s en ga naar %s",
+	"I live in %i1 and I'm going to %i2": "Ik ga naar %i2 en woon in %i1"
+	},
+"ru": {
+	"Hello World!": "Привет, мир!",
+	"daysinweek": ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"],
+	"London": {
+			"nom" : "Лондон",
+			"acc" : "Лондона",
+			"loc" : "Лондоне"
+		}
+}

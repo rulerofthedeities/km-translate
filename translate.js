@@ -1,61 +1,46 @@
 angular.module('km.translate', [])
 
-.constant('DEFAULTS', {'LAN': 'en', 'CASE': 'nom'})
+.constant(
+	'DEFAULTS', {
+		'LAN': 'en', 
+		'CASE': 'nom', 
+		'FILE' : 'json/translations.json'}
+)
 
-.value('translateTable', {
-	'Hello World!': {
-		'cz': 'Ahoj světe!',
-		'de': 'Hallo Welt!',
-		'es': '¡Hola, mundo!',
-		'fr': 'Bonjour le monde!',
-		//'it': 'Ciao, mondo!',
-		'nl': 'Hallo wereld!',
-		'ru': 'Привет, мир!'
-	},
-	'daysinweek': {
-		'cz': ["pondělí", "útery", "středa", "čtvrtek", "pátek", "sobota", "neděle"],
-		'de': ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"],
-		'en': ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-		'es': ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"],
-		'fr': ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"],
-		//'it': ["lunedì", "martedi", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"],
-		'nl': ["maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag"],
-		'ru': ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"]
-	},
-	'London':{
-		'fr': 'Londres',
-		'nl': 'Londen',
-		'ru' : {
-			'nom' : "Лондон",
-			'acc' : "Лондона",
-			'loc' : "Лондоне"
+.service('kmts', function ($http, $log, kmtp){
+	var translationTable,
+		promise,
+		fileName;
+	console.log("lan in http service: " + kmtp.getCurrentLanguage());
+	fileName = kmtp.getTranslationFile();
+	promise = $http.get(fileName);
+
+	return {
+		promise: promise.then(
+			function (response) {
+				$log.info("Fetched translation data from '" + fileName + "'");
+				translationTable = response.data;
+			},
+			function(response){
+				$log.error("File '" + fileName + "' not found.");
+			}
+		),
+		getTranslationTable: function () {
+			return translationTable;
 		}
-	},
-	'Paris':{
-		'fr': 'Paris',
-		'nl': 'Parijs'
-	},
-	'I live in %s':{
-		'fr': 'J\'habite à %s',
-		'nl': 'Ik woon in %s'
-	},
-	'I\'m going to %s':{
-		'nl': 'Ik ga naar %s'
-	},
-	'I live in %s and I\'m going to %s':{
-		'nl': 'Ik woon in %s en ga naar %s'
-	},
-	'I live in %i1 and I\'m going to %i2':{
-		'nl': 'Ik ga naar %i2 en woon in %i1'
-	}
+	};
 })
 
-.provider('kmt', function(DEFAULTS) {
-	var lan = "";
- 
+.provider('kmtp', function(DEFAULTS) {
+	var lan = DEFAULTS.LAN,
+		translationFile = DEFAULTS.FILE;
+
 	return {
 		configSetCurrentLanguage: function(newLan) {
 			lan = newLan;
+		},
+		configSetTranslationFile: function(newFileName){
+			translationFile = newFileName;
 		},
 
 	    $get: function() {
@@ -64,23 +49,48 @@ angular.module('km.translate', [])
 	                return lan;
 	            },
 	            setCurrentLanguage: function(newLan){
-	            	lan = newLan || DEFAULTS.LAN;
+	            	lan = newLan || lan || DEFAULTS.LAN;
 	            },
 				insert: function(srcStr, toInsert){
-					var resultStr = srcStr,
-						find;
+					var resultStr = srcStr;
 					if (toInsert.constructor === Array){
-						for (var i = 0; i < toInsert.length; i++){
+						for (var i = 0, find; i < toInsert.length; i++){
 							find = new RegExp('\%i' + (i + 1));
 							resultStr = resultStr.replace(find, toInsert[i]);
 						}
-						for (var i = 0; i < toInsert.length; i++){
+						for (i = 0; i < toInsert.length; i++){
 							resultStr = resultStr.replace(/\%s/, toInsert[i]);
 						}
 					} else {
 						resultStr = srcStr.replace(/\%s/g, toInsert);
 					}
 					return resultStr;
+				},
+				getTranslationFile: function(fileName){
+					return fileName || translationFile || DEFAULTS.FILE;
+				},
+				loadTranslationFile: function($http, fileName){
+					var dataFile = fileName || translationFile || DEFAULTS.FILE,
+						promise = $http.get(dataFile);
+
+					//test delay
+					console.log("start delay");
+					//setTimeout(function(){ 
+						console.log("end delay");
+						promise.then(
+						function(response) {
+							console.log("Fetched translation data from '" + dataFile + "'");
+							translateTable = response.data;
+						},
+						function(response) {
+							console.log("File '" + dataFile + "' not found.");
+						}
+					);
+					//}, 10);
+					
+				},
+				getTranslationTable: function(){
+					return translationTable;
 				}
 	        };
 		}
@@ -88,12 +98,14 @@ angular.module('km.translate', [])
 
 })
 
-.factory('translate', function(DEFAULTS, kmt, translateTable){
+.factory('translate', function(DEFAULTS, kmtp, kmts){
 	return {
 		translate: function(strToTranslate, options){
-			var lan = kmt.getCurrentLanguage(),
+			console.log("translating");
+			var lan = kmtp.getCurrentLanguage(),
 				translation = strToTranslate,
-				cas;
+				cas,
+				translateTable = kmts.getTranslationTable();
 			options = options || {};
 			strToTranslate = options.alias || strToTranslate;
 			cas = options['case'];
@@ -117,7 +129,7 @@ angular.module('km.translate', [])
 			}
 			//Check if there are strings to be inserted
 			if ((/\%s/.test(translation) ||  (/\%i\d/.test(translation))) && options.insert){
-				translation = kmt.insert(translation, options.insert);
+				translation = kmtp.insert(translation, options.insert);
 				return translation;
 			} else {
 				return translation;
@@ -127,7 +139,6 @@ angular.module('km.translate', [])
 })
 
 .filter('translate', function(translate){
-	console.log("translate filter");
 	return function(input){
 		var translation = translate.translate(input);
 		if (translation){
@@ -139,35 +150,21 @@ angular.module('km.translate', [])
 })
 
 .directive('translate', function(translate, $compile){
-	console.log("translate directive");
 	return {
 		compile: function(scope, element, attributes){
 			return {
 				pre: function preLink(scope, iElement, iAttrs, controller) {
 				},
 				post: function postLink(scope, iElement, iAttrs, controller) {
+					var params = iAttrs.translate,
+						attrToTranslate,
+						toTranslate;
 
-					/*
-						The first parameter is type of data to translate: 
-							A : attribute
-							C : content
-							S : scope value
-						The second parameter defines which value to translate:
-							if fist parameter is 
-							A : second parameter is the attribute name
-							C : second parameter is the translation variable used to find the translation (in A & S this is the value)
-							S : second parameter is the scope variable name
-						The third parameter is optional. 
-							It specifies a replacement value, to replace any %s in the text to translate, if available
-						The fourth parameter is optional.
-							It defines the case if one is required.
-					*/
-
-					var params = iAttrs.translate.split("|"),
-						input = iAttrs[params[1]];
-
-					if (input){
-						iAttrs.$set(params[1], translate.translate(input));
+					if (params){
+						input = JSON.parse(params.replace(/\'/g, '"'));
+						attrToTranslate = input.attr;
+						toTranslate = iAttrs[attrToTranslate];
+						iAttrs.$set(attrToTranslate, translate.translate(toTranslate));
 						iAttrs.$set("translate", ""); //To prevent looping
 
 						$compile(iElement)(scope);

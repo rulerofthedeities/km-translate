@@ -1,24 +1,37 @@
 angular.module("translationDemo", ['ngRoute', 'km.translate'])
 
-.config(function($routeProvider, $provide){
+.config(function($routeProvider){
 	$routeProvider.when('/', {
 		templateUrl:'partials/totranslate.htm',
-		controller:'translateCtrl'
+		controller:'translateCtrl',
+		resolve:{
+			'translationData':function(kmts){
+				console.log("Loading file...");
+				return kmts.promise;
+			}
+		}
 	}).when('/:lan', {
 		templateUrl:'partials/totranslate.htm',
-		controller:'translateCtrl'
+		controller:'translateCtrl',
+		resolve:{
+			'translationData':function(kmts){
+				console.log("Loading file...");
+				return kmts.promise;
+			}
+		}
 	}).otherwise({redirectTo: '/'});
 })
 
-.config(function(kmtProvider){
-	kmtProvider.configSetCurrentLanguage("en");
+.config(function(kmtpProvider){
+	kmtpProvider.configSetCurrentLanguage("en");
+	//kmtpProvider.configSetTranslationFile("json/translations.json");
 })
 
-.controller("translateCtrl", function($scope, kmt, $routeParams){
-	kmt.setCurrentLanguage($routeParams.lan);
+.controller("translateCtrl", function($scope, kmtp, $routeParams){
+	kmtp.setCurrentLanguage($routeParams.lan);
 	$scope.data = {
 		title:'Hello World!',
-		currentLanguage: kmt.getCurrentLanguage()
+		currentLanguage: kmtp.getCurrentLanguage()
 	};
 })
 
@@ -27,7 +40,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 		require: 'E',
 		templateUrl: 'partials/flags.htm',
 		scope: {},
-		controller: function($scope, $location, kmt){
+		controller: function($scope, $location){
 			//ISO 3166-1-alpha-2 code
 			$scope.languages = [
 				{code: 'en', name:'English'},

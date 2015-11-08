@@ -1,31 +1,50 @@
 <flags></flags>
 <div class="clearfix"></div>
 <div>Current language: {{data.currentLanguage}}</div>
+
 <div class="panel panel-primary">
 	<div class="panel-heading">Filter</div>
 	<div class="panel-body">
 		<test1 title="{{data.title | translate}}"></test1>
 	</div>
+</div>
+
+<div class="panel panel-primary">
 	<div class="panel-heading">Filter in directive</div>
 	<div class="panel-body">
 		<test2 title="{{data.title}}"></test2>
 	</div>
+</div>
+
+<div class="panel panel-primary">
 	<div class="panel-heading">Attribute</div>
 	<div class="panel-body">
-		<test3 title="{{data.title}}" translate="A|title"></test3>
+		<test3 title="{{data.title}}" translate="{'attr':'title'}"></test3>
 	</div>
+</div>
+
+<div class="panel panel-primary">
 	<div class="panel-heading">Controller</div>
 	<div class="panel-body">
 		<test4></test4>
 	</div>
+</div>
+
+<div class="panel panel-primary">
 	<div class="panel-heading">Array</div>
 	<div class="panel-body">
 		<test5></test5>
 	</div>
+</div>
+
+<div class="panel panel-primary">
 	<div class="panel-heading">Cases</div>
 	<div class="panel-body">
 		<test6></test6>
 	</div>
+</div>
+
+<div class="panel panel-primary">
 	<div class="panel-heading">Replacement strings</div>
 	<div class="panel-body">
 		<test7></test7>
