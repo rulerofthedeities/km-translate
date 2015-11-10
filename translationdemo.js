@@ -108,15 +108,17 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 	return{
 		require: 'E',
 		scope : {},
-		template: '<div>Source (en):{{city}}<br>Nominative: {{cityNom}}<br>Accusative: {{cityAcc}}<br>Locative: {{cityLoc}}</div>',
+		template: '<div><em>Source (en):{{city}}</em><br>Nominative: {{cityNom}}<br>Accusative: {{cityAcc}}<br>Genitive: {{cityGen}}<br>Locative: {{cityLoc}}</div>',
 		controller: function($scope){
 			var city = "London",
 				cityNom = translate.translate(city),
 				cityAcc = translate.translate(city, {'case': 'acc'}),
+				cityGen = translate.translate(city, {'case': 'gen'}),
 				cityLoc = translate.translate(city, {'case': 'loc'});
 			$scope.city = city;
 			$scope.cityNom = cityNom;
 			$scope.cityAcc = cityAcc;
+			$scope.cityGen = cityGen;
 			$scope.cityLoc = cityLoc;
 		}
 	};
@@ -126,12 +128,12 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 	return{
 		require: 'E',
 		scope : {},
-		template: '<div>{{whereilive}}<br>{{whereimgoingto}}<br>{{whereiliveandgo}}<br>{{whereiliveandgo2}}</div>',
+		template: '<div>{{whereilive}}<br>{{whereilive2}}<br><br><em>Multiple variables:</em><br>{{whereiliveandgo}}<br><em>With variable placing</em>:<br>{{whereiliveandgo2}}</div>',
 		controller: function($scope){
-			var cityLoc = translate.translate("London", {'case':"loc"}),
-				cityAcc = translate.translate("Paris", {'case':"acc"});
+			var cityLoc = translate.translate("London", {'case':"loc"});
 			$scope.whereilive = translate.translate("I live in %s", {'insert':cityLoc});
-			$scope.whereimgoingto = translate.translate("I'm going to %s", {'insert':cityAcc});
+			cityLoc = translate.translate("Paris", {'case':"loc"});
+			$scope.whereilive2 = translate.translate("I live in %s", {'insert':cityLoc});
 			$scope.whereiliveandgo = translate.translate("I live in %s and I'm going to %s",
 				{'insert':["A", "B"]});
 			$scope.whereiliveandgo2 = translate.translate("I live in %i1 and I'm going to %i2",

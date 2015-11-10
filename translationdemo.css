@@ -26,3 +26,7 @@ ul.flags .es{background-position:-110px 0;}
 ul.flags .pt{background-position:-132px 0;}
 ul.flags .it{background-position:-154px 0;}
 ul.flags .cz{background-position:-176px 0;}
+
+em{
+    color:#666;
+}

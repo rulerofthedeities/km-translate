@@ -15,7 +15,6 @@ angular.module('km.translate', [])
 		promise,
 		fileName;
 
-	console.log("lan in http service: " + kmtp.getCurrentLanguage());
 	fileName = kmtp.getTranslationFile();
 	promise = $http.get(fileName);
 
@@ -90,12 +89,12 @@ angular.module('km.translate', [])
 .factory('translate', function(DEFAULTS, kmtp, kmts){
 	return {
 		translate: function(strToTranslate, options){
-			console.log("translating");
 			var lan = kmtp.getCurrentLanguage(),
 				translation = strToTranslate,
 				cas,
 				translateTable = kmts.getTranslationTable(),
 				format;//array indices depend on the format of the JSON source 
+				
 			options = options || {};
 			strToTranslate = options.alias || strToTranslate;
 			format = kmtp.getFileFormat() === "term" ? [strToTranslate, lan] : [lan, strToTranslate];
@@ -145,8 +144,6 @@ angular.module('km.translate', [])
 	return {
 		compile: function(scope, element, attributes){
 			return {
-				pre: function preLink(scope, iElement, iAttrs, controller) {
-				},
 				post: function postLink(scope, iElement, iAttrs, controller) {
 					var params = iAttrs.translate,
 						attrToTranslate,
