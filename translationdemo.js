@@ -1,44 +1,44 @@
 angular.module("translationDemo", ['ngRoute', 'km.translate'])
 
-.config(function($routeProvider){
+.config(['$routeProvider', function($routeProvider){
 	$routeProvider.when('/', {
 		templateUrl:'partials/totranslate.htm',
 		controller:'translateCtrl',
 		resolve:{
-			'translationData':function(kmts){
+			'translationData':['kmts', function(kmts){
 				return kmts.promise;
-			}
+			}]
 		}
 	}).when('/:lan', {
 		templateUrl:'partials/totranslate.htm',
 		controller:'translateCtrl',
 		resolve:{
-			'translationData':function(kmts){
+			'translationData':['kmts', function(kmts){
 				return kmts.promise;
-			}
+			}]
 		}
 	}).otherwise({redirectTo: '/'});
-})
+}])
 
-.config(function(kmtpProvider){
+.config(['kmtpProvider', function(kmtpProvider){
 	kmtpProvider.configSetCurrentLanguage("en");
 	kmtpProvider.configSetTranslationFile("json/translations.json", "lan");
-})
+}])
 
-.controller("translateCtrl", function($scope, kmtp, $routeParams){
+.controller("translateCtrl", ['$scope', 'kmtp', '$routeParams', function($scope, kmtp, $routeParams){
 	kmtp.setCurrentLanguage($routeParams.lan);
 	$scope.data = {
 		title:'Hello World!',
 		currentLanguage: kmtp.getCurrentLanguage()
 	};
-})
+}])
 
 .directive("flags", function(){
 	return {
 		require: 'E',
 		templateUrl: 'partials/flags.htm',
 		scope: {},
-		controller: function($scope, $location){
+		controller: ['$scope', '$location', function($scope, $location){
 			//ISO 3166-1-alpha-2 code
 			$scope.languages = [
 				{code: 'en', name:'English'},
@@ -54,7 +54,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 				var url = '/' + newLan;
 				$location.url(url);
 			};
-		}
+		}]
 	};
 })
 
@@ -82,34 +82,34 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 	};
 })
 
-.directive("test4", function(translate){
+.directive("test4", ['translate', function(translate){
 	return{
 		require: 'E',
 		scope : {},
 		template: '<h1>{{title}}</h1>',
-		controller: function($scope){
+		controller: ['$scope', function($scope){
 			$scope.title = translate.translate("Hello World!");
-		}
+		}]
 	};
-})
+}])
 
-.directive("test5", function(translate){
+.directive("test5", ['translate', function(translate){
 	return{
 		require: 'E',
 		scope : {},
 		template: '<ul class="list-inline"><li ng-repeat="day in days">{{day}}</li></ul>',
-		controller: function($scope){
+		controller: ['$scope', function($scope){
 			$scope.days = translate.translate(null, {'alias':'daysinweek'});
-		}
+		}]
 	};
-})
+}])
 
-.directive("test6", function(translate){
+.directive("test6", ['translate', function(translate){
 	return{
 		require: 'E',
 		scope : {},
 		template: '<div><em>Source (en):{{city}}</em><br>Nominative: {{cityNom}}<br>Accusative: {{cityAcc}}<br>Genitive: {{cityGen}}<br>Locative: {{cityLoc}}</div>',
-		controller: function($scope){
+		controller: ['$scope', function($scope){
 			var city = "London",
 				cityNom = translate.translate(city),
 				cityAcc = translate.translate(city, {'case': 'acc'}),
@@ -120,16 +120,16 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 			$scope.cityAcc = cityAcc;
 			$scope.cityGen = cityGen;
 			$scope.cityLoc = cityLoc;
-		}
+		}]
 	};
-})
+}])
 
-.directive("test7", function(translate){
+.directive("test7", ['translate', function(translate){
 	return{
 		require: 'E',
 		scope : {},
 		template: '<div>{{whereilive}}<br>{{whereilive2}}<br><br><em>Multiple variables:</em><br>{{whereiliveandgo}}<br><em>With variable placing</em>:<br>{{whereiliveandgo2}}</div>',
-		controller: function($scope){
+		controller: ['$scope', function($scope){
 			var cityLoc = translate.translate("London", {'case':"loc"});
 			$scope.whereilive = translate.translate("I live in %s", {'insert':cityLoc});
 			cityLoc = translate.translate("Paris", {'case':"loc"});
@@ -138,6 +138,6 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 				{'insert':["A", "B"]});
 			$scope.whereiliveandgo2 = translate.translate("I live in %i1 and I'm going to %i2",
 				{'insert':["A", "B"]});
-		}
+		}]
 	};
-});
+}]);

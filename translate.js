@@ -10,7 +10,7 @@ angular.module('km.translate', [])
 	}
 )
 
-.service('kmts', function ($http, $log, kmtp){
+.service('kmts', ['$http', '$log', 'kmtp', function ($http, $log, kmtp){
 	var translationTable,
 		promise,
 		fileName;
@@ -32,9 +32,9 @@ angular.module('km.translate', [])
 			return translationTable;
 		}
 	};
-})
+}])
 
-.provider('kmtp', function(DEFAULTS) {
+.provider('kmtp', ['DEFAULTS', function(DEFAULTS) {
 	var lan = DEFAULTS.LAN,
 		translationFile = DEFAULTS.FILE,
 		formatType = DEFAULTS.FORMAT;
@@ -84,9 +84,9 @@ angular.module('km.translate', [])
 		}
 	};
 
-})
+}])
 
-.factory('translate', function(DEFAULTS, kmtp, kmts){
+.factory('translate', ['DEFAULTS', 'kmtp', 'kmts', function(DEFAULTS, kmtp, kmts){
 	return {
 		translate: function(strToTranslate, options){
 			var lan = kmtp.getCurrentLanguage(),
@@ -127,9 +127,9 @@ angular.module('km.translate', [])
 			}
 		}
 	};
-})
+}])
 
-.filter('translate', function(translate){
+.filter('translate', ['translate', function(translate){
 	return function(input){
 		var translation = translate.translate(input);
 		if (translation){
@@ -138,9 +138,9 @@ angular.module('km.translate', [])
 			return input;
 		}
 	};
-})
+}])
 
-.directive('translate', function(translate, $compile){
+.directive('translate', ['translate', '$compile', function(translate, $compile){
 	return {
 		compile: function(scope, element, attributes){
 			return {
@@ -163,4 +163,4 @@ angular.module('km.translate', [])
 		}
 
 	};
-});
+}]);
