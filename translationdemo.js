@@ -83,7 +83,11 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 	};
 })
 
-.directive("test4", ['translate', function(translate){
+.directive("test4", function(){
+	return{};
+})
+
+.directive("test5", ['translate', function(translate){
 	return{
 		restrict: 'E',
 		scope : {},
@@ -94,7 +98,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 	};
 }])
 
-.directive("test5", ['translate', function(translate){
+.directive("test6", ['translate', function(translate){
 	return{
 		restrict: 'E',
 		scope : {},
@@ -105,7 +109,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 	};
 }])
 
-.directive("test6", ['translate', function(translate){
+.directive("test7", ['translate', function(translate){
 	return{
 		restrict: 'E',
 		scope : {},
@@ -125,7 +129,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 	};
 }])
 
-.directive("test7", ['translate', function(translate){
+.directive("test8", ['translate', function(translate){
 	return{
 		restrict: 'E',
 		scope : {},

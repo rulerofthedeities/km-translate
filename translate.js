@@ -150,13 +150,18 @@ angular.module('km.translate', [])
 						toTranslate;
 
 					if (params){
-						input = JSON.parse(params.replace(/\'/g, '"'));
-						attrToTranslate = input.attr;
-						toTranslate = iAttrs[attrToTranslate];
-						iAttrs.$set(attrToTranslate, translate.translate(toTranslate));
-						iAttrs.$set("translate", ""); //To prevent looping
+						if (params === "content"){
+							iElement.html(translate.translate(iElement.text()));
+						}
+						else {
+							input = JSON.parse(params.replace(/\'/g, '"'));
+							attrToTranslate = input.attr;
+							toTranslate = iAttrs[attrToTranslate];
+							iAttrs.$set(attrToTranslate, translate.translate(toTranslate));
+							iAttrs.$set("translate", ""); //To prevent looping
 
-						$compile(iElement)(scope);
+							$compile(iElement)(scope);
+						}
 					}
 				}
 			};
