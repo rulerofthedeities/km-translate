@@ -1,21 +1,22 @@
 angular.module("translationDemo", ['ngRoute', 'km.translate'])
 
 .config(['$routeProvider', function($routeProvider){
+	var translationResolve = ['kmts', 
+  		function(kmts){
+			return kmts.promise; 
+	}];
+
 	$routeProvider.when('/', {
 		templateUrl:'partials/totranslate.htm',
 		controller:'translateCtrl',
 		resolve:{
-			'translationData':['kmts', function(kmts){
-				return kmts.promise;
-			}]
+			'translationData':translationResolve
 		}
 	}).when('/:lan', {
 		templateUrl:'partials/totranslate.htm',
 		controller:'translateCtrl',
 		resolve:{
-			'translationData':['kmts', function(kmts){
-				return kmts.promise;
-			}]
+			'translationData':translationResolve
 		}
 	}).otherwise({redirectTo: '/'});
 }])
@@ -35,7 +36,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 
 .directive("flags", function(){
 	return {
-		require: 'E',
+		restrict: 'E',
 		templateUrl: 'partials/flags.htm',
 		scope: {},
 		controller: ['$scope', '$location', function($scope, $location){
@@ -60,7 +61,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 
 .directive("test1", function(){
 	return{
-		require: 'E',
+		restrict: 'E',
 		scope : {header:"@title"},
 		template: '<h1>{{header}}</h1>' 
 	};
@@ -68,7 +69,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 
 .directive("test2", function(){
 	return{
-		require: 'E',
+		restrict: 'E',
 		scope : {header:"@title"},
 		template: '<h1>{{header | translate}}</h1>'
 	};
@@ -76,7 +77,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 
 .directive("test3", function(){
 	return{
-		require: 'E',
+		restrict: 'E',
 		scope : {header:"@title"},
 		template: '<h1>{{header}}</h1>'
 	};
@@ -84,7 +85,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 
 .directive("test4", ['translate', function(translate){
 	return{
-		require: 'E',
+		restrict: 'E',
 		scope : {},
 		template: '<h1>{{title}}</h1>',
 		controller: ['$scope', function($scope){
@@ -95,7 +96,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 
 .directive("test5", ['translate', function(translate){
 	return{
-		require: 'E',
+		restrict: 'E',
 		scope : {},
 		template: '<ul class="list-inline"><li ng-repeat="day in days">{{day}}</li></ul>',
 		controller: ['$scope', function($scope){
@@ -106,7 +107,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 
 .directive("test6", ['translate', function(translate){
 	return{
-		require: 'E',
+		restrict: 'E',
 		scope : {},
 		template: '<div><em>Source (en):{{city}}</em><br>Nominative: {{cityNom}}<br>Accusative: {{cityAcc}}<br>Genitive: {{cityGen}}<br>Locative: {{cityLoc}}</div>',
 		controller: ['$scope', function($scope){
@@ -126,7 +127,7 @@ angular.module("translationDemo", ['ngRoute', 'km.translate'])
 
 .directive("test7", ['translate', function(translate){
 	return{
-		require: 'E',
+		restrict: 'E',
 		scope : {},
 		template: '<div>{{whereilive}}<br>{{whereilive2}}<br><br><em>Multiple variables:</em><br>{{whereiliveandgo}}<br><em>With variable placing</em>:<br>{{whereiliveandgo2}}</div>',
 		controller: ['$scope', function($scope){

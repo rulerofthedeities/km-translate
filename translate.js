@@ -161,6 +161,6 @@ angular.module('km.translate', [])
 				}
 			};
 		}
-
 	};
 }]);
+
