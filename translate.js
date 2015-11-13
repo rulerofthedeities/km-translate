@@ -130,8 +130,8 @@ angular.module('km.translate', [])
 }])
 
 .filter('translate', ['translate', function(translate){
-	return function(input){
-		var translation = translate.translate(input);
+	return function(input, options){
+		var translation = translate.translate(input, options);
 		if (translation){
 			return translation;
 		} else {
