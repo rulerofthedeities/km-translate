@@ -55,7 +55,8 @@ Note: the second parameter of the configSetTranslationFile and configSetTranslat
 ##Usage
 In the partials/totranslate.htm file you can see some examples that show how to use the translation module
 
-1. Filters
+###1. Filters
+
 In an expression in the source html:
 ```html
 <test1 title="{{data.title | translate}}"></test1>
@@ -71,7 +72,8 @@ Or in an expression in the template html:
 })
 Note : too many filters can become a drain on performance
 ```
-2. Directive attribute
+###2. Directive attribute
+
 Add a translate attribute with an object that indicates which attribute to translate (in this case the 'title' attribute)
 ```html
 <test3 title="{{data.title}}" translate="{'attr':'title'}"></test3>
@@ -80,7 +82,7 @@ Add a translate attribute with the value 'content', this indicates the entire co
 ```html
 <test4 translate="content">Hello World!</test4>
 ```
-3. Controller
+###3. Controller
 
 Translate a variable and assign it to the scope:
 ```javascript

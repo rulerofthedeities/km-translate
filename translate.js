@@ -2,15 +2,16 @@
 
 angular.module('km.translate', [])
 
-.constant(
-	'DEFAULTS', {
+.constant({
+	'version' : '1.0.0',
+	'DEFAULTS': {
 		'LAN': 'en',
 		'CASE': 'nom',
 		'FILE': 'json/translations.json',
 		'FORMATS': ['lan', "term"],
 		'FORMAT': 'lan'
 	}
-)
+})
 
 .service('kmTranslateFile', ['$http', '$log', 'kmTranslateConfig', function ($http, $log, kmTranslateConfig){
 	var translationTableFromFile,
