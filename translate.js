@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('km.translate', [])
 
 .constant(
@@ -15,12 +17,13 @@ angular.module('km.translate', [])
 		promise,
 		fileName;
 
-	fileName = kmTranslateConfig.getTranslationFile();
-	promise = $http.get(fileName);
-
 	return {
 		promise: function(){
-				promise = promise.then(
+			if (promise){
+				return promise;
+			} else {
+				fileName = kmTranslateConfig.getTranslationFileName();
+				promise = $http.get(fileName).then(
 					function (response) {
 						if (response){
 							$log.info("Fetched translation data from '" + fileName + "'");
@@ -32,7 +35,8 @@ angular.module('km.translate', [])
 					}
 				);
 				return promise;
-			},
+			}
+		},
 		getTranslationTable: function () {
 			return translationTableFromFile;
 		}
@@ -68,22 +72,7 @@ angular.module('km.translate', [])
 	            setCurrentLanguage: function(newLan){
 	            	lan = newLan || lan || DEFAULTS.LAN;
 	            },
-				insert: function(srcStr, toInsert){
-					var resultStr = srcStr;
-					if (toInsert.constructor === Array){
-						for (var i = 0, find; i < toInsert.length; i++){
-							find = new RegExp('\%i' + (i + 1));
-							resultStr = resultStr.replace(find, toInsert[i]);
-						}
-						for (i = 0; i < toInsert.length; i++){
-							resultStr = resultStr.replace(/\%s/, toInsert[i]);
-						}
-					} else {
-						resultStr = srcStr.replace(/\%s/g, toInsert);
-					}
-					return resultStr;
-				},
-				getTranslationFile: function(){
+				getTranslationFileName: function(){
 					return translationFile || DEFAULTS.FILE;
 				},
 				getFileFormat: function(){
@@ -100,6 +89,21 @@ angular.module('km.translate', [])
 
 .factory('kmTranslate', ['DEFAULTS', 'kmTranslateConfig', 'kmTranslateFile', function(DEFAULTS, kmTranslateConfig, kmTranslateFile){
 	return {
+		_insert: function(srcStr, toInsert){
+			var resultStr = srcStr;
+			if (toInsert.constructor === Array){
+				for (var i = 0, find; i < toInsert.length; i++){
+					find = new RegExp('\%i' + (i + 1));
+					resultStr = resultStr.replace(find, toInsert[i]);
+				}
+				for (i = 0; i < toInsert.length; i++){
+					resultStr = resultStr.replace(/\%s/, toInsert[i]);
+				}
+			} else {
+				resultStr = srcStr.replace(/\%s/g, toInsert);
+			}
+			return resultStr;
+		},
 		translate: function(strToTranslate, options){
 			var lan = kmTranslateConfig.getCurrentLanguage(),
 				translation = strToTranslate,
@@ -132,7 +136,7 @@ angular.module('km.translate', [])
 			}
 			//Check if there are strings to be inserted
 			if ((/\%s/.test(translation) ||  (/\%i\d/.test(translation))) && options.insert){
-				translation = kmTranslateConfig.insert(translation, options.insert);
+				translation = this._insert(translation, options.insert);
 				return translation;
 			} else {
 				return translation;
@@ -166,7 +170,7 @@ angular.module('km.translate', [])
 							iElement.html(kmTranslate.translate(iElement.text()));
 						}
 						else {
-							input = JSON.parse(params.replace(/\'/g, '"'));
+							var input = JSON.parse(params.replace(/\'/g, '"'));
 							attrToTranslate = input.attr;
 							toTranslate = iAttrs[attrToTranslate];
 							iAttrs.$set(attrToTranslate, kmTranslate.translate(toTranslate));
